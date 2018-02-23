@@ -1,12 +1,14 @@
 package com.ruchij.services.github
 
-import org.eclipse.egit.github.core.{MergeStatus, PullRequest, Repository}
+import com.ruchij.ec.BlockingExecutionContext
+import com.ruchij.exceptions.MergeConflictException
 import org.eclipse.egit.github.core.service.{PullRequestService, RepositoryService}
+import org.eclipse.egit.github.core.{MergeStatus, PullRequest, Repository}
 
 import scala.collection.JavaConverters._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class GitHubServiceImpl(apiKey: String)(implicit executionContext: ExecutionContext) extends GitHubService
+class GitHubServiceImpl(apiKey: String)(implicit blockingExecutionContext: BlockingExecutionContext) extends GitHubService
 {
   private def authenticatedPullRequestService: PullRequestService =
     new PullRequestService() {
@@ -27,15 +29,21 @@ class GitHubServiceImpl(apiKey: String)(implicit executionContext: ExecutionCont
       authenticatedPullRequestService.getPullRequests(() => repositoryId, state.name).asScala.toList
     }
 
-  override def mergePullRequest(repositoryId: String, pullRequestId: Int, message: String): Future[MergeStatus] =
-    Future {
-      authenticatedPullRequestService.merge(() => repositoryId, pullRequestId, message)
-    }
+  override def mergePullRequest(repositoryId: String, pullRequestNumber: Int, message: String): Future[MergeStatus] =
+    for {
+      isMergeable <- Future {
+        authenticatedPullRequestService.getPullRequest(() => repositoryId, pullRequestNumber).isMergeable
+      }
 
+      _ <- if (isMergeable) Future.successful((): Unit) else Future.failed(MergeConflictException(repositoryId, pullRequestNumber))
+
+      mergeStatus = authenticatedPullRequestService.merge(() => repositoryId, pullRequestNumber, message)
+    }
+    yield mergeStatus
 }
 
 object GitHubServiceImpl
 {
-  def apply(apiKey: String)(implicit executionContext: ExecutionContext): GitHubServiceImpl =
+  def apply(apiKey: String)(implicit blockingExecutionContext: BlockingExecutionContext): GitHubServiceImpl =
     new GitHubServiceImpl(apiKey)
 }

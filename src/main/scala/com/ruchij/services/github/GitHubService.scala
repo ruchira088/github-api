@@ -10,5 +10,5 @@ trait GitHubService
 
   def getPullRequests(repositoryId: String, state: PullRequestState): Future[List[PullRequest]]
 
-  def mergePullRequest(repositoryId: String, pullRequestId: Int, message: String): Future[MergeStatus]
+  def mergePullRequest(repositoryId: String, pullRequestNumber: Int, message: String): Future[MergeStatus]
 }

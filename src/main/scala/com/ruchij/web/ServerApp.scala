@@ -8,6 +8,7 @@ import com.ruchij.ec.BlockingExecutionContext
 import com.ruchij.exceptions.GitHubApiTokenUndefinedException
 import com.ruchij.services.github.GitHubServiceImpl
 import com.ruchij.utils.ScalaUtils
+import com.ruchij.web.routes.IndexRoute
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future, Promise}
@@ -31,7 +32,7 @@ object ServerApp
 
         gitHubService = GitHubServiceImpl(gitHubApiKey)(blockingExecutionContext)
 
-        server <- Http().bindAndHandle(Routes(gitHubService), "0.0.0.0", httpPort)
+        server <- Http().bindAndHandle(IndexRoute(gitHubService), "0.0.0.0", httpPort)
       }
       yield server
 

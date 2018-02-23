@@ -1,15 +1,14 @@
 package com.ruchij.web.routes
 
 import akka.http.scaladsl.server.Directives._
-import com.ruchij.services.github.{GitHubService, PullRequestState}
+import com.ruchij.services.github.GitHubService
 import com.ruchij.utils.JsonFormatters._
 
-import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 object RepositoryRoute
 {
-  def apply(gitHubService: GitHubService)(implicit executionContext: ExecutionContext) =
+  def apply(gitHubService: GitHubService) =
     pathPrefix("repository") {
       pathEndOrSingleSlash {
         get {

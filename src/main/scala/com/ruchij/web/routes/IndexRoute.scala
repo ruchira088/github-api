@@ -4,11 +4,9 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import com.ruchij.services.github.GitHubService
 
-import scala.concurrent.ExecutionContext
-
 object IndexRoute
 {
-  def apply(gitHubService: GitHubService)(implicit executionContext: ExecutionContext) =
+  def apply(gitHubService: GitHubService) =
     path("") {
       get {
         complete(
