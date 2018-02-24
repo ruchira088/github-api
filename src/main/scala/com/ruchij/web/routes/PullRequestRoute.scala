@@ -11,7 +11,7 @@ import scala.util.Success
 object PullRequestRoute
 {
   def apply(gitRepoId: String)(gitHubService: GitHubService) =
-    pathPrefix("pull-requests") {
+    pathPrefix("pull-request") {
       path("closed") {
         get {
           onComplete(gitHubService.getPullRequests(gitRepoId, PullRequestState.Closed)) {
