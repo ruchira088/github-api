@@ -1,9 +1,11 @@
 package com.ruchij.web.routes
 
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import com.ruchij.services.github.{GitHubService, PullRequestState}
 import com.ruchij.utils.JsonFormatters._
 import com.ruchij.web.requests.MergeRequest
+import com.ruchij.web.responses.Mergeable
 
 import scala.util.Success
 
@@ -25,18 +27,40 @@ object PullRequestRoute
           }
         }
       } ~
-      path(IntNumber / "merge") {
+      pathPrefix(IntNumber) {
         pullReqNumber => {
-          post {
-            entity(as[MergeRequest]) {
-              mergeRequest =>
-                onComplete(gitHubService.mergePullRequest(gitRepoId, pullReqNumber, mergeRequest.message)) {
-                  case Success(_) => complete("")
-                }
+          path("mergeable") {
+            get {
+              onComplete(gitHubService.isMergeable(gitRepoId, pullReqNumber)) {
+                case Success(isMergeable) =>
+                  complete(Mergeable(isMergeable))
+              }
+            }
+          } ~
+          path("merge") {
+            post {
+              entity(as[MergeRequest]) {
+                mergeRequest =>
+                  onComplete(gitHubService.mergePullRequest(gitRepoId, pullReqNumber, mergeRequest.message)) {
+                    case Success(_) => complete("")
+                  }
+              }
             }
           }
         }
       }
+//      path(IntNumber / "merge") {
+//        pullReqNumber => {
+//          post {
+//            entity(as[MergeRequest]) {
+//              mergeRequest =>
+//                onComplete(gitHubService.mergePullRequest(gitRepoId, pullReqNumber, mergeRequest.message)) {
+//                  case Success(_) => complete("")
+//                }
+//            }
+//          }
+//        }
+//      }
     }
 
 }

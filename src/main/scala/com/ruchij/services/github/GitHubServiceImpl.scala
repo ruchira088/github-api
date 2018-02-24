@@ -31,15 +31,18 @@ class GitHubServiceImpl(apiKey: String)(implicit blockingExecutionContext: Block
 
   override def mergePullRequest(repositoryId: String, pullRequestNumber: Int, message: String): Future[MergeStatus] =
     for {
-      isMergeable <- Future {
-        authenticatedPullRequestService.getPullRequest(() => repositoryId, pullRequestNumber).isMergeable
-      }
+      isMergeable <- isMergeable(repositoryId, pullRequestNumber)
 
       _ <- if (isMergeable) Future.successful((): Unit) else Future.failed(MergeConflictException(repositoryId, pullRequestNumber))
 
       mergeStatus = authenticatedPullRequestService.merge(() => repositoryId, pullRequestNumber, message)
     }
     yield mergeStatus
+
+  override def isMergeable(repositoryId: String, pullRequestNumber: Int): Future[Boolean] =
+    Future {
+      authenticatedPullRequestService.getPullRequest(() => repositoryId, pullRequestNumber).isMergeable
+    }
 }
 
 object GitHubServiceImpl
