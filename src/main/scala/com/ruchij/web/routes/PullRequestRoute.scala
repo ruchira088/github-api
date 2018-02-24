@@ -1,6 +1,5 @@
 package com.ruchij.web.routes
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import com.ruchij.services.github.{GitHubService, PullRequestState}
 import com.ruchij.utils.JsonFormatters._
@@ -49,18 +48,6 @@ object PullRequestRoute
           }
         }
       }
-//      path(IntNumber / "merge") {
-//        pullReqNumber => {
-//          post {
-//            entity(as[MergeRequest]) {
-//              mergeRequest =>
-//                onComplete(gitHubService.mergePullRequest(gitRepoId, pullReqNumber, mergeRequest.message)) {
-//                  case Success(_) => complete("")
-//                }
-//            }
-//          }
-//        }
-//      }
     }
 
 }
