@@ -5,6 +5,7 @@ services:
   github-api:
     build: .
     ports:
+      - 8000:8000
       - 5005:5005
     volumes:
       - "~/.sbt:/root/.sbt"

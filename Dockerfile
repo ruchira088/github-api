@@ -10,7 +10,7 @@ RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.lis
 
 WORKDIR /opt/github-api
 
-EXPOSE 5005
+EXPOSE 8000 5005
 
 COPY . .
 
