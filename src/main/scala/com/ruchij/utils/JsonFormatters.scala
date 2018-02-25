@@ -3,8 +3,8 @@ package com.ruchij.utils
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.ruchij.web.requests.MergeRequest
 import com.ruchij.web.responses.Mergeable
-import org.eclipse.egit.github.core.{PullRequest, Repository}
-import spray.json.{DefaultJsonProtocol, JsNumber, JsObject, JsString, JsValue, RootJsonFormat}
+import org.eclipse.egit.github.core.{MergeStatus, PullRequest, Repository}
+import spray.json.{DefaultJsonProtocol, JsBoolean, JsNumber, JsObject, JsString, JsValue, RootJsonFormat}
 
 object JsonFormatters extends DefaultJsonProtocol with SprayJsonSupport
 {
@@ -19,6 +19,7 @@ object JsonFormatters extends DefaultJsonProtocol with SprayJsonSupport
         "id" -> JsNumber(repository.getId),
         "fullId" -> JsString(repository.generateId()),
         "name" -> JsString(repository.getName),
+        "pushedAt" -> JsString(repository.getPushedAt.toString),
         "language" -> JsString(Option(repository.getLanguage).getOrElse("UNKNOWN"))
       )
 
@@ -31,6 +32,14 @@ object JsonFormatters extends DefaultJsonProtocol with SprayJsonSupport
         "createdAt" -> JsString(pullRequest.getCreatedAt.toString),
         "state" -> JsString(pullRequest.getState)
     )
+
+  implicit def mergeStatusJsonFormat: ResponseWriter[MergeStatus] =
+    (mergeStatus: MergeStatus) =>
+      JsObject(
+        "message" -> JsString(mergeStatus.getMessage),
+        "sha" -> JsString(mergeStatus.getSha),
+        "isMerged" -> JsBoolean(mergeStatus.isMerged)
+      )
 
   implicit def mergeRequest: RootJsonFormat[MergeRequest] = jsonFormat1(MergeRequest.apply)
 
