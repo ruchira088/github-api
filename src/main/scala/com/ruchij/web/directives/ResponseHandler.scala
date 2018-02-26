@@ -22,7 +22,6 @@ object ResponseHandler
 
       case Failure(NonFatal(exception)) =>
         complete(StatusCodes.InternalServerError, Error(exception.getMessage))
-
     }
 
   def apply[A]()(implicit toResponseMarshaller: ToResponseMarshaller[A]) =
