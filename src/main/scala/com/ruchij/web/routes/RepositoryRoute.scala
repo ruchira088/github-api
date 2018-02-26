@@ -3,8 +3,7 @@ package com.ruchij.web.routes
 import akka.http.scaladsl.server.Directives._
 import com.ruchij.services.github.GitHubService
 import com.ruchij.utils.JsonFormatters._
-
-import scala.util.{Failure, Success}
+import com.ruchij.web.directives.ResponseHandler
 
 object RepositoryRoute
 {
@@ -13,8 +12,7 @@ object RepositoryRoute
       pathEndOrSingleSlash {
         get {
           onComplete(gitHubService.getRepositories()) {
-            case Success(repositories) => complete(repositories)
-            case Failure(throwable) => complete(throwable.getMessage)
+            ResponseHandler()
           }
         }
       } ~

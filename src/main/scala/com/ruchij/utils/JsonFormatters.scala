@@ -2,7 +2,7 @@ package com.ruchij.utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.ruchij.web.requests.MergeRequest
-import com.ruchij.web.responses.Mergeable
+import com.ruchij.web.responses.{Error, Mergeable}
 import org.eclipse.egit.github.core.{MergeStatus, PullRequest, Repository}
 import spray.json.{DefaultJsonProtocol, JsBoolean, JsNumber, JsObject, JsString, JsValue, RootJsonFormat}
 
@@ -44,4 +44,6 @@ object JsonFormatters extends DefaultJsonProtocol with SprayJsonSupport
   implicit def mergeRequest: RootJsonFormat[MergeRequest] = jsonFormat1(MergeRequest.apply)
 
   implicit def mergeableResponse: RootJsonFormat[Mergeable] = jsonFormat1(Mergeable.apply)
+
+  implicit def errorResponse: RootJsonFormat[Error] = jsonFormat1(Error.apply)
 }

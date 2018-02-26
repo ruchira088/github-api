@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.HttpMethods
 import akka.http.scaladsl.server.Directives._
 import com.ruchij.services.github.{GitHubService, PullRequestState}
 import com.ruchij.utils.JsonFormatters._
-import com.ruchij.web.directives.Cors
+import com.ruchij.web.directives.{Cors, ResponseHandler}
 import com.ruchij.web.requests.MergeRequest
 import com.ruchij.web.responses.Mergeable
 
@@ -17,14 +17,14 @@ object PullRequestRoute
       path("closed") {
         get {
           onComplete(gitHubService.getPullRequests(gitRepoId, PullRequestState.Closed)) {
-            case Success(pullRequests) => complete(pullRequests)
+            ResponseHandler()
           }
         }
       } ~
       path("open") {
         get {
           onComplete(gitHubService.getPullRequests(gitRepoId, PullRequestState.Open)) {
-            case Success(pullRequests) => complete(pullRequests)
+            ResponseHandler()
           }
         }
       } ~
@@ -33,8 +33,7 @@ object PullRequestRoute
           path("mergeable") {
             get {
               onComplete(gitHubService.isMergeable(gitRepoId, pullReqNumber)) {
-                case Success(isMergeable) =>
-                  complete(Mergeable(isMergeable))
+                ResponseHandler(Mergeable)
               }
             }
           } ~
@@ -43,7 +42,7 @@ object PullRequestRoute
               entity(as[MergeRequest]) {
                 mergeRequest =>
                   onComplete(gitHubService.mergePullRequest(gitRepoId, pullReqNumber, mergeRequest.message)) {
-                    case Success(mergeStatus) => complete(mergeStatus)
+                    ResponseHandler()
                   }
               }
             } ~
