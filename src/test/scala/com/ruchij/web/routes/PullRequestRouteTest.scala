@@ -38,6 +38,10 @@ class PullRequestRouteTest extends FlatSpec with ScalatestRouteTest with Matcher
       .when(GIT_REPO, *)
       .onCall((_, state) => Future.successful(List(pullRequest(state))))
 
+    (gitHubService.isMergeable _)
+      .when(GIT_REPO, *)
+      .returns(Future.successful(true))
+
     PullRequestRoute(GIT_REPO)(gitHubService)
   }
 
@@ -54,6 +58,19 @@ class PullRequestRouteTest extends FlatSpec with ScalatestRouteTest with Matcher
 
     Get("/pull-request/open") ~> pullRequestRoute() ~> check {
       pullRequestAssertion(PullRequestState.Open)
+    }
+  }
+
+  it should
+    "return a Mergeable response for GET requests to /pull-request/:intNumber/mergeable" in {
+
+    Get("/pull-request/1/mergeable") ~> pullRequestRoute() ~> check {
+
+      status shouldEqual StatusCodes.OK
+
+      contentType shouldEqual ContentTypes.`application/json`
+
+      entityAs[String] shouldEqual """{"isMergeable":true}"""
     }
   }
 }
