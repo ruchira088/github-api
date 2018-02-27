@@ -8,6 +8,8 @@ import org.scalamock.scalatest.MockFactory
 
 object TestItemUtils extends MockFactory
 {
+  val date = new Date()
+
   def repository: Repository = {
     val repository = stub[Repository]
 
@@ -15,7 +17,7 @@ object TestItemUtils extends MockFactory
     (repository.getId _).when().returns(123L)
     (repository.getName _).when().returns("sample-repo")
     (repository.getLanguage _).when().returns("Scala")
-    (repository.getPushedAt _).when().returns(new Date())
+    (repository.getPushedAt _).when().returns(date)
 
     repository
   }
@@ -26,7 +28,7 @@ object TestItemUtils extends MockFactory
     (pullRequest.getId _).when().returns(456L)
     (pullRequest.getNumber _).when().returns(7)
     (pullRequest.getTitle _).when().returns("Pull Request Title")
-    (pullRequest.getCreatedAt _).when().returns(new Date())
+    (pullRequest.getCreatedAt _).when().returns(date)
     (pullRequest.getState _).when().returns(state.name)
 
     pullRequest

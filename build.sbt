@@ -23,8 +23,6 @@ assemblyJarName in assembly := "github-api.jar"
 
 coverageEnabled := true
 
-parallelExecution := false
-
 testOptions in Test +=
   Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-results")
 

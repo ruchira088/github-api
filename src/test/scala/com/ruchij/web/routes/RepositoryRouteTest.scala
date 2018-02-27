@@ -6,14 +6,13 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.ruchij.services.github.GitHubService
 import com.ruchij.utils.TestItemUtils._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.Future
 
-class RepositoryRouteTest extends WordSpec with ScalatestRouteTest with Matchers with MockFactory
+class RepositoryRouteTest extends FlatSpec with ScalatestRouteTest with Matchers with MockFactory
 {
-  "RepositoryRoute" should {
-
+  "RepositoryRoute" should
     "return a list of repositories for GET requests to /repository" in {
 
       val gitHubService = stub[GitHubService]
@@ -36,5 +35,4 @@ class RepositoryRouteTest extends WordSpec with ScalatestRouteTest with Matchers
         }
       }
     }
-  }
 }
