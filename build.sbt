@@ -12,6 +12,8 @@ lazy val root = (project in file("."))
       gitHub,
 
       scalaTest % Test,
+      scalaMock % Test,
+      akkaHttpTestkit % Test,
       pegdown % Test
     )
   )
@@ -20,6 +22,8 @@ mainClass in assembly := Some("com.ruchij.web.ServerApp")
 assemblyJarName in assembly := "github-api.jar"
 
 coverageEnabled := true
+
+parallelExecution := false
 
 testOptions in Test +=
   Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-results")
