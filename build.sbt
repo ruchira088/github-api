@@ -16,6 +16,9 @@ lazy val root = (project in file("."))
     )
   )
 
+mainClass in assembly := Some("com.ruchij.web.ServerApp")
+assemblyJarName in assembly := "github-api.jar"
+
 coverageEnabled := true
 
 testOptions in Test +=

@@ -14,6 +14,8 @@ EXPOSE 8000
 
 COPY . .
 
-ENTRYPOINT ["sbt"]
+RUN sbt assembly
 
-CMD ["run"]
+ENTRYPOINT ["java"]
+
+CMD ["-jar", "target/scala-2.12/github-api.jar"]
